@@ -13,6 +13,20 @@ export default async function handler(
     if (req.method === "POST") {
       try {
         const payload: CreateItemModel = JSON.parse(req.body);
+        if (
+          !payload.name ||
+          payload.name === "" ||
+          !payload.id ||
+          payload.id === "" ||
+          !payload.amount ||
+          payload.amount < 0 ||
+          !payload.price ||
+          payload.price < 0 ||
+          !payload.created_by ||
+          payload.created_by === "" ||
+          !payload.created_at
+        )
+          throw Errors.MissingRequest;
         const statement: DatabaseExecuteHandler = {
           query: `${"INSERT INTO stock(id, name, amount, price, created_by, created_at) VALUES(?, ?, ?, ?, ? ,?)"}`,
           values: [
@@ -38,11 +52,9 @@ export default async function handler(
           values: [],
         };
         const result: ItemModel[] = await executeQuery(statement);
-        if (result.length > 0) {
-          res.status(200).send(result);
-        } else if (result.length === 0) {
-          res.status(204).send(null);
-        } else throw Errors.SQL;
+        if (result.length > 0) res.status(200).send(result);
+        else if (result.length === 0) res.status(204).send(null);
+        else throw Errors.SQL;
       } catch (error) {
         throw Errors.SQL;
       }

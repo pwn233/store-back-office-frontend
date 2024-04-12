@@ -1,6 +1,11 @@
 import { CustomError } from "./error";
 
 const Errors = {
+  MissingRequest: new CustomError(
+    400,
+    "missing_request_error",
+    "the request is missing."
+  ),
   Fetcher: new CustomError(
     500,
     "swr_fetcher_error",
@@ -18,7 +23,7 @@ const Errors = {
   ),
   InvalidHTTPMethod: new CustomError(
     405,
-    "invalid_http_method",
+    "invalid_http_method_error",
     "the http method is not supported by this api."
   ),
 };
